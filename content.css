@@ -1,0 +1,77 @@
+/*
+  Highlights the "Watch later" entry in YouTube's left sidebar.
+
+  We key off href="/playlist?list=WL" rather than the title text or
+  visible label, because the href is stable across languages/locales
+  while the title/label text is translated for non-English users.
+
+  box-shadow (inset) is used instead of `border` so the highlight
+  never changes the element's box size or shifts surrounding layout,
+  and it still respects the rounded corners of the row.
+
+  --wlh-border-color is set at runtime by settings.js from the value
+  saved in the popup (falls back to the default orange if settings
+  haven't loaded yet, or on browsers without color-mix() support).
+*/
+
+ytd-guide-entry-renderer:has(a#endpoint[href="/playlist?list=WL"]) tp-yt-paper-item {
+  box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 6%, transparent);
+}
+
+/* Fallback for browser engines without :has() support (rare in current Chrome) */
+a#endpoint[href="/playlist?list=WL"] tp-yt-paper-item {
+  box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
+  border-radius: 8px;
+}
+
+/* Slightly stronger highlight on hover for a nice touch */
+ytd-guide-entry-renderer:has(a#endpoint[href="/playlist?list=WL"]):hover tp-yt-paper-item {
+  box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
+  background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 12%, transparent);
+}
+
+/*
+  Playlist shortcuts, injected by playlist-shortcuts.js right after the
+  "Playlists" sidebar row. Colors reference YouTube's own CSS custom
+  properties so the shortcuts automatically match light/dark theme
+  without us having to detect it ourselves.
+*/
+.wlh-shortcuts-container {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 8px 0;
+}
+
+.wlh-shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 24px 6px 12px; /* extra left indent to read as a sub-list */
+  text-decoration: none;
+  color: var(--yt-spec-text-primary, #f1f1f1);
+  font-family: "Roboto", "Arial", sans-serif;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  border-radius: 0 20px 20px 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.wlh-shortcut-row:hover {
+  background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1));
+}
+
+.wlh-shortcut-icon {
+  display: flex;
+  flex-shrink: 0;
+  opacity: 0.75;
+  color: var(--wlh-border-color, currentColor);
+}
+
+.wlh-shortcut-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

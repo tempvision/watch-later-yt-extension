@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Watch Later Highlighter settings</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="icons/icon48.png" alt="" width="24" height="24" />
+    <h1>Watch Later Highlighter</h1>
+  </header>
+
+  <section class="wlh-field">
+    <label for="borderColor">
+      Watch later border color
+      <span class="wlh-hint">Applies instantly on YouTube</span>
+    </label>
+    <div class="wlh-color-row">
+      <input type="color" id="borderColor" />
+      <span id="borderColorValue" class="wlh-color-value"></span>
+    </div>
+  </section>
+
+  <section class="wlh-field">
+    <label for="maxPlaylists">
+      Playlist shortcuts to show
+      <span class="wlh-hint">Below the "Playlists" sidebar entry (0–20)</span>
+    </label>
+    <input type="number" id="maxPlaylists" min="0" max="20" step="1" />
+  </section>
+
+  <footer>
+    <button id="resetBtn" type="button">Reset to defaults</button>
+    <span id="savedNote" class="wlh-saved-note" aria-live="polite"></span>
+  </footer>
+
+  <script src="constants.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
