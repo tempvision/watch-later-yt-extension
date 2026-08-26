@@ -4,8 +4,10 @@
   --wlh-card: #16161a;
   --wlh-line: #2a2a30;
   --wlh-text: #f4f4f5;
+  --wlh-white: #ffffff;
   --wlh-dim: #8f8f96;
   --wlh-accent: #ff9800; /* overridden at runtime to the picked color */
+  --wlh-red: #ff4d4f;
   --wlh-mono: "JetBrains Mono", "Roboto Mono", "Consolas", "SFMono-Regular", monospace;
   --wlh-sans: "Inter", "Segoe UI", "Roboto", Arial, sans-serif;
 }
@@ -22,7 +24,7 @@ body {
 body {
   width: 364px;
   padding: 14px 16px 16px;
-  background: var(--wlh-bg);
+  background: var(--wlh-white);
   color: var(--wlh-text);
   font-family: var(--wlh-sans);
   -webkit-font-smoothing: antialiased;
@@ -55,6 +57,7 @@ body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  color: var(--wlh-bg);
 }
 
 /* ---------- Cards ---------- */
@@ -118,6 +121,7 @@ input[type="color"]#borderColor::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
+
 input[type="color"]#borderColor::-webkit-color-swatch {
   border: none;
   border-radius: 5px;
@@ -180,8 +184,8 @@ button:focus-visible {
 }
 
 .wlh-foot button:hover {
-  color: var(--wlh-text);
-  border-color: var(--wlh-text);
+  color: var(--wlh-bg);
+  border-color: var(--wlh-bg);
 }
 
 .wlh-saved-note {
