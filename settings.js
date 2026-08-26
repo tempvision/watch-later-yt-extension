@@ -17,7 +17,10 @@
     );
   }
 
-  // Initial load
+  // Initial load. NOTE: this resolves asynchronously, so playlist-shortcuts.js
+  // may have already rendered with WLH_DEFAULTS at document_start. The
+  // "wlh-settings-changed" event dispatched below lets it re-render with the
+  // real values once storage has resolved.
   chrome.storage.sync.get(WLH_DEFAULTS, (items) => {
     window.WLH_SETTINGS = items;
     applyBorderColor(items.borderColor);

@@ -12,23 +12,38 @@ function flashSaved() {
   savedNoteTimer = setTimeout(() => savedNote.classList.remove("wlh-visible"), 1200);
 }
 
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
+// Guarantees a valid, lowercase #rrggbb value; falls back to the default if
+// storage ever contains something malformed (so the color input never renders blank).
+function normalizeColor(value) {
+  if (typeof value === "string" && HEX_COLOR_RE.test(value)) {
+    return value.toLowerCase();
+  }
+  return WLH_DEFAULTS.borderColor;
+}
+
 function renderColorValue(hex) {
   borderColorValue.textContent = hex;
 }
 
 function loadSettings() {
   chrome.storage.sync.get(WLH_DEFAULTS, (items) => {
-    borderColorInput.value = items.borderColor;
-    renderColorValue(items.borderColor);
+    const color = normalizeColor(items.borderColor);
+    borderColorInput.value = color;
+    renderColorValue(color);
     maxPlaylistsInput.value = items.maxPlaylists;
   });
 }
 
 borderColorInput.addEventListener("input", (e) => {
-  const value = e.target.value;
+  const value = normalizeColor(e.target.value);
+  borderColorInput.value = value;
   renderColorValue(value);
   chrome.storage.sync.set({ borderColor: value }, flashSaved);
 });
+
+let maxPlaylistsTimer = null;
 
 maxPlaylistsInput.addEventListener("input", (e) => {
   const raw = e.target.value;
@@ -38,7 +53,11 @@ maxPlaylistsInput.addEventListener("input", (e) => {
   if (Number.isNaN(value)) return;
   value = Math.min(20, Math.max(0, value));
 
-  chrome.storage.sync.set({ maxPlaylists: value }, flashSaved);
+  // Debounce so we don't hammer chrome.storage.sync on every keystroke.
+  clearTimeout(maxPlaylistsTimer);
+  maxPlaylistsTimer = setTimeout(() => {
+    chrome.storage.sync.set({ maxPlaylists: value }, flashSaved);
+  }, 200);
 });
 
 maxPlaylistsInput.addEventListener("blur", (e) => {

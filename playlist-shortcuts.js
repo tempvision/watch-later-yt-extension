@@ -72,8 +72,16 @@
 
   // -------- DOM helpers --------
   function findPlaylistsEntry() {
-    const anchor = document.querySelector('a#endpoint[href="/feed/playlists"]');
-    return anchor ? anchor.closest("ytd-guide-entry-renderer") : null;
+    // Match "/feed/playlists" even if YouTube later appends query params
+    // (the path is language-neutral, so this holds across locales).
+    const anchors = document.querySelectorAll('a#endpoint[href^="/feed/playlists"]');
+    for (const anchor of anchors) {
+      const href = anchor.getAttribute("href") || "";
+      if (href === "/feed/playlists" || href.startsWith("/feed/playlists?")) {
+        return anchor.closest("ytd-guide-entry-renderer");
+      }
+    }
+    return null;
   }
 
   function buildShortcutRow(playlist) {
@@ -84,10 +92,19 @@
 
     const icon = document.createElement("span");
     icon.className = "wlh-shortcut-icon";
-    icon.innerHTML =
-      '<svg viewBox="0 0 24 24" width="16" height="16">' +
-      '<path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/>' +
-      "</svg>";
+
+    // Build the SVG via DOM APIs instead of innerHTML so we never rely on
+    // innerHTML (avoids any Trusted Types friction on YouTube's page).
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "16");
+    svg.setAttribute("height", "16");
+    const path = document.createElementNS(SVG_NS, "path");
+    path.setAttribute("fill", "currentColor");
+    path.setAttribute("d", "M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z");
+    svg.appendChild(path);
+    icon.appendChild(svg);
 
     const label = document.createElement("span");
     label.className = "wlh-shortcut-label";
@@ -111,10 +128,9 @@
 
     if (!playlists || playlists.length === 0 || maxPlaylists <= 0) return;
 
-    // Literal "last N" per the spec. If you'd rather show the first N
-    // (usually the most recently updated, since that's how the feed
-    // page orders them) swap this for playlists.slice(0, maxPlaylists).
-    const shortcuts = playlists.slice(-maxPlaylists);
+    // The feed page orders playlists most-recently-updated first, so the
+    // first N are the most recent — show those.
+    const shortcuts = playlists.slice(0, maxPlaylists);
 
     const container = document.createElement("div");
     container.id = CONTAINER_ID;
@@ -135,6 +151,10 @@
   }
 
   // -------- Lifecycle --------
+  // Note: settings.js loads the user's saved settings asynchronously, so on
+  // the very first paint we may render with WLH_DEFAULTS. That's fine —
+  // settings.js dispatches "wlh-settings-changed" once storage resolves, and
+  // the listener below re-renders with the real values.
   refreshAndRender();
 
   // YouTube is a single-page app; re-render (and occasionally refetch) on

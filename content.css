@@ -1,9 +1,10 @@
 /*
   Highlights the "Watch later" entry in YouTube's left sidebar.
 
-  We key off href="/playlist?list=WL" rather than the title text or
-  visible label, because the href is stable across languages/locales
-  while the title/label text is translated for non-English users.
+  We key off the href (prefix match on "/playlist?list=WL") rather than the
+  title text or visible label, because the href is stable across
+  languages/locales while the title/label text is translated for non-English
+  users. Prefix matching also survives YouTube appending extra query params.
 
   box-shadow (inset) is used instead of `border` so the highlight
   never changes the element's box size or shifts surrounding layout,
@@ -14,20 +15,20 @@
   haven't loaded yet, or on browsers without color-mix() support).
 */
 
-ytd-guide-entry-renderer:has(a#endpoint[href="/playlist?list=WL"]) tp-yt-paper-item {
+ytd-guide-entry-renderer:has(a#endpoint[href^="/playlist?list=WL"]) tp-yt-paper-item {
   box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
   border-radius: 8px;
   background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 6%, transparent);
 }
 
 /* Fallback for browser engines without :has() support (rare in current Chrome) */
-a#endpoint[href="/playlist?list=WL"] tp-yt-paper-item {
+a#endpoint[href^="/playlist?list=WL"] tp-yt-paper-item {
   box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
   border-radius: 8px;
 }
 
 /* Slightly stronger highlight on hover for a nice touch */
-ytd-guide-entry-renderer:has(a#endpoint[href="/playlist?list=WL"]):hover tp-yt-paper-item {
+ytd-guide-entry-renderer:has(a#endpoint[href^="/playlist?list=WL"]):hover tp-yt-paper-item {
   box-shadow: inset 0 0 0 2px var(--wlh-border-color, #ff9800);
   background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 12%, transparent);
 }
