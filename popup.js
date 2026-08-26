@@ -25,6 +25,9 @@ function normalizeColor(value) {
 
 function renderColorValue(hex) {
   borderColorValue.textContent = hex;
+  // Chromatic touch: theme the whole popup with the picked accent color
+  // (hex text, focus rings, saved note all pick this up).
+  document.documentElement.style.setProperty("--wlh-accent", hex);
 }
 
 function loadSettings() {

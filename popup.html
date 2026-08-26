@@ -6,32 +6,38 @@
   <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <header>
-    <img src="icons/icon48.png" alt="" width="24" height="24" />
-    <h1>Watch Later Highlighter</h1>
+  <header class="wlh-header">
+    <div class="wlh-brand">
+      <img src="icons/icon48.png" alt="" width="24" height="24" />
+      <h1>Watch Later Highlighter</h1>
+    </div>
   </header>
 
-  <section class="wlh-field">
-    <label for="borderColor">
-      Watch later border color
-      <span class="wlh-hint">Applies instantly on YouTube</span>
-    </label>
-    <div class="wlh-color-row">
-      <input type="color" id="borderColor" />
-      <span id="borderColorValue" class="wlh-color-value"></span>
-    </div>
-  </section>
+  <main class="wlh-cards">
+    <section class="wlh-card">
+      <div class="wlh-card-text">
+        <h2>Accent color</h2>
+        <p>Change the highlight color for Watch later in your sidebar.</p>
+      </div>
+      <div class="wlh-control">
+        <input type="color" id="borderColor" />
+        <span id="borderColorValue" class="wlh-hex">#ff9800</span>
+      </div>
+    </section>
 
-  <section class="wlh-field">
-    <label for="maxPlaylists">
-      Playlist shortcuts to show
-      <span class="wlh-hint">Below the "Playlists" sidebar entry (0–20)</span>
-    </label>
-    <input type="number" id="maxPlaylists" min="0" max="20" step="1" />
-  </section>
+    <section class="wlh-card">
+      <div class="wlh-card-text">
+        <h2>Visible playlists</h2>
+        <p>Set how many playlists are visible in your sidebar.</p>
+      </div>
+      <div class="wlh-control">
+        <input type="number" id="maxPlaylists" min="0" max="20" step="1" />
+      </div>
+    </section>
+  </main>
 
-  <footer>
-    <button id="resetBtn" type="button">Reset to defaults</button>
+  <footer class="wlh-foot">
+    <button id="resetBtn" type="button" title="Reset to defaults">Reset</button>
     <span id="savedNote" class="wlh-saved-note" aria-live="polite"></span>
   </footer>
 
