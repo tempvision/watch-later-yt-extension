@@ -14,8 +14,6 @@ function flashSaved() {
 
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 
-// Guarantees a valid, lowercase #rrggbb value; falls back to the default if
-// storage ever contains something malformed (so the color input never renders blank).
 function normalizeColor(value) {
   if (typeof value === "string" && HEX_COLOR_RE.test(value)) {
     return value.toLowerCase();
@@ -25,8 +23,6 @@ function normalizeColor(value) {
 
 function renderColorValue(hex) {
   borderColorValue.textContent = hex;
-  // Chromatic touch: theme the whole popup with the picked accent color
-  // (hex text, focus rings, saved note all pick this up).
   document.documentElement.style.setProperty("--wlh-accent", hex);
 }
 
@@ -50,13 +46,12 @@ let maxPlaylistsTimer = null;
 
 maxPlaylistsInput.addEventListener("input", (e) => {
   const raw = e.target.value;
-  if (raw === "") return; // let the user clear the field while typing
+  if (raw === "") return;
 
   let value = parseInt(raw, 10);
   if (Number.isNaN(value)) return;
   value = Math.min(20, Math.max(0, value));
 
-  // Debounce so we don't hammer chrome.storage.sync on every keystroke.
   clearTimeout(maxPlaylistsTimer);
   maxPlaylistsTimer = setTimeout(() => {
     chrome.storage.sync.set({ maxPlaylists: value }, flashSaved);
@@ -64,7 +59,6 @@ maxPlaylistsInput.addEventListener("input", (e) => {
 });
 
 maxPlaylistsInput.addEventListener("blur", (e) => {
-  // Snap back to a valid number if the field was left empty/invalid
   if (e.target.value === "" || Number.isNaN(parseInt(e.target.value, 10))) {
     chrome.storage.sync.get(WLH_DEFAULTS, (items) => {
       e.target.value = items.maxPlaylists;

@@ -1,26 +1,12 @@
-/*
- * Adds shortcut rows for your most recent playlists directly below the
- * "Playlists" entry in YouTube's left sidebar.
- *
- * Data source: https://www.youtube.com/feed/playlists
- * We fetch that page's HTML and pull the `ytInitialData` blob out of it —
- * the same JSON YouTube's own front-end uses to render that page — rather
- * than calling a private API endpoint. No extra permissions are needed
- * because the request is same-origin (youtube.com -> youtube.com), so it's
- * sent with your normal session cookies, same as if the page itself had
- * fetched it.
- */
-
 (function () {
   const PLAYLISTS_FEED_URL = "https://www.youtube.com/feed/playlists";
   const CONTAINER_ID = "wlh-playlist-shortcuts";
-  const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // don't hammer the feed on every nav
+  const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 
   let cachedPlaylists = null;
   let lastFetchTime = 0;
   let inFlight = null;
 
-  // -------- Fetch + parse playlists from /feed/playlists --------
   function fetchPlaylistsFromFeed() {
     if (inFlight) return inFlight;
 
@@ -53,8 +39,7 @@
             id: v.contentId,
             url: `/playlist?list=${v.contentId}`,
           }))
-          // Watch later / Liked videos already have their own sidebar rows
-          .filter((pl) => pl.id !== "WL" && pl.id !== "LL");
+          .filter((pl) => pl.id && pl.id !== "WL" && pl.id !== "LL");
 
         cachedPlaylists = playlists;
         lastFetchTime = Date.now();
@@ -70,10 +55,7 @@
     return inFlight;
   }
 
-  // -------- DOM helpers --------
   function findPlaylistsEntry() {
-    // Match "/feed/playlists" even if YouTube later appends query params
-    // (the path is language-neutral, so this holds across locales).
     const anchors = document.querySelectorAll('a#endpoint[href^="/feed/playlists"]');
     for (const anchor of anchors) {
       const href = anchor.getAttribute("href") || "";
@@ -93,8 +75,6 @@
     const icon = document.createElement("span");
     icon.className = "wlh-shortcut-icon";
 
-    // Build the SVG via DOM APIs instead of innerHTML so we never rely on
-    // innerHTML (avoids any Trusted Types friction on YouTube's page).
     const SVG_NS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -117,7 +97,7 @@
 
   function renderShortcuts(playlists) {
     const entry = findPlaylistsEntry();
-    if (!entry) return; // sidebar not ready / not on a page that shows it yet
+    if (!entry) return;
 
     const existing = document.getElementById(CONTAINER_ID);
     if (existing) existing.remove();
@@ -128,8 +108,6 @@
 
     if (!playlists || playlists.length === 0 || maxPlaylists <= 0) return;
 
-    // The feed page orders playlists most-recently-updated first, so the
-    // first N are the most recent — show those.
     const shortcuts = playlists.slice(0, maxPlaylists);
 
     const container = document.createElement("div");
@@ -150,26 +128,14 @@
     renderShortcuts(playlists);
   }
 
-  // -------- Lifecycle --------
-  // Note: settings.js loads the user's saved settings asynchronously, so on
-  // the very first paint we may render with WLH_DEFAULTS. That's fine —
-  // settings.js dispatches "wlh-settings-changed" once storage resolves, and
-  // the listener below re-renders with the real values.
   refreshAndRender();
 
-  // YouTube is a single-page app; re-render (and occasionally refetch) on
-  // client-side navigation instead of waiting for a full page reload.
   window.addEventListener("yt-navigate-finish", () => refreshAndRender());
 
-  // React instantly if the user changes the shortcut count in the popup
-  // while YouTube is already open — no refetch needed, just re-slice.
   document.addEventListener("wlh-settings-changed", () => {
     renderShortcuts(cachedPlaylists);
   });
 
-  // The sidebar can (re)build itself asynchronously, e.g. right after
-  // login or on the very first paint. Watch for the "Playlists" row
-  // showing up and make sure our shortcuts are attached underneath it.
   let debounceTimer = null;
   const observer = new MutationObserver(() => {
     if (debounceTimer) return;

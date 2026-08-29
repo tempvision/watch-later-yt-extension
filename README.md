@@ -1,5 +1,7 @@
 # Watch Later Highlighter
 
+> **Chrome Web Store** — [Install the extension](https://chromewebstore.google.com/detail/cmlmlkmlhhlhjkbdddjneejpamnacdhm?utm_source=item-share-cb)
+
 A lightweight Chrome/Edge extension that highlights the **Watch later** entry in YouTube's left sidebar and adds quick-access shortcuts to your most recently updated playlists.
 
 ## Features
@@ -49,7 +51,3 @@ content.css             Sidebar highlight + shortcut styles
 popup.html / .css / .js Settings popup
 icons/                  Extension icons
 ```
-
-## License
-
-MIT © tempvision — see [LICENSE](LICENSE).
