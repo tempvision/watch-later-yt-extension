@@ -12,6 +12,13 @@ function flashSaved() {
   savedNoteTimer = setTimeout(() => savedNote.classList.remove("wlh-visible"), 1200);
 }
 
+function saveSettings(settings, callback) {
+  chrome.storage.sync.set(settings, () => {
+    if (chrome.runtime.lastError) return;
+    if (callback) callback();
+  });
+}
+
 const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 
 function normalizeColor(value) {
@@ -35,11 +42,22 @@ function loadSettings() {
   });
 }
 
+let borderColorTimer = null;
+
 borderColorInput.addEventListener("input", (e) => {
   const value = normalizeColor(e.target.value);
   borderColorInput.value = value;
   renderColorValue(value);
-  chrome.storage.sync.set({ borderColor: value }, flashSaved);
+  clearTimeout(borderColorTimer);
+  borderColorTimer = setTimeout(() => saveSettings({ borderColor: value }, flashSaved), 200);
+});
+
+borderColorInput.addEventListener("change", (e) => {
+  clearTimeout(borderColorTimer);
+  const value = normalizeColor(e.target.value);
+  borderColorInput.value = value;
+  renderColorValue(value);
+  saveSettings({ borderColor: value }, flashSaved);
 });
 
 let maxPlaylistsTimer = null;
@@ -54,7 +72,7 @@ maxPlaylistsInput.addEventListener("input", (e) => {
 
   clearTimeout(maxPlaylistsTimer);
   maxPlaylistsTimer = setTimeout(() => {
-    chrome.storage.sync.set({ maxPlaylists: value }, flashSaved);
+    saveSettings({ maxPlaylists: value }, flashSaved);
   }, 200);
 });
 
@@ -67,7 +85,7 @@ maxPlaylistsInput.addEventListener("blur", (e) => {
 });
 
 resetBtn.addEventListener("click", () => {
-  chrome.storage.sync.set(WLH_DEFAULTS, () => {
+  saveSettings(WLH_DEFAULTS, () => {
     loadSettings();
     flashSaved();
   });

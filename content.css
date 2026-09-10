@@ -51,3 +51,12 @@ ytd-guide-entry-renderer:has(a#endpoint[href^="/playlist?list=WL"]):hover tp-yt-
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+yt-list-item-view-model.wlh-watch-later-item .ytListItemViewModelLayoutWrapper {
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 35%, transparent);
+}
+
+yt-list-item-view-model.wlh-watch-later-item .ytListItemViewModelLeading {
+  color: var(--wlh-border-color, #ff9800);
+}

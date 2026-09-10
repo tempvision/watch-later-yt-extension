@@ -2,11 +2,12 @@
 
 > **Chrome Web Store** — [Install the extension](https://chromewebstore.google.com/detail/cmlmlkmlhhlhjkbdddjneejpamnacdhm?utm_source=item-share-cb)
 
-A lightweight Chrome/Edge extension that highlights the **Watch later** entry in YouTube's left sidebar and adds quick-access shortcuts to your most recently updated playlists.
+A lightweight Chrome/Edge extension that highlights **Watch later** across YouTube — in the left sidebar and in the ⋮ menu on every video — and adds quick-access shortcuts to your most recently updated playlists.
 
 ## Features
 
 - Highlights the "Watch later" sidebar entry with a customizable border color.
+- Highlights the "Save to Watch later" option in every video's ⋮ menu with a subtle tint of the same color.
 - Adds shortcuts to your most recently updated playlists, right under the "Playlists" sidebar entry (up to 20).
 - Changes apply instantly on an already-open YouTube tab — no reload needed.
 - Works in light and dark themes, and in any YouTube locale (it matches language-neutral URLs, not translated labels).
@@ -47,7 +48,8 @@ manifest.json           MV3 manifest
 constants.js            Shared defaults (borderColor, maxPlaylists)
 settings.js             Content script: loads/applies settings
 playlist-shortcuts.js   Content script: fetches & renders playlist shortcuts
-content.css             Sidebar highlight + shortcut styles
+content.css             Sidebar + menu highlight styles
+menu-highlight.js       Content script: highlights the Watch later menu option
 popup.html / .css / .js Settings popup
 icons/                  Extension icons
 ```
