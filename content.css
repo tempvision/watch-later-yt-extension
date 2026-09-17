@@ -63,6 +63,72 @@ html[dark] .wlh-shortcut-icon {
   opacity: 0.75;
 }
 
+.wlh-card-actions {
+  display: flex !important;
+  align-items: flex-start;
+  width: 80px !important;
+  min-width: 80px !important;
+  flex: 0 0 80px !important;
+}
+
+.wlh-card-title-reserved {
+  display: block;
+  width: calc(100% - 80px) !important;
+  max-width: calc(100% - 80px) !important;
+  box-sizing: border-box;
+}
+
+.wlh-card-watch-later {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  padding: 0;
+  color: var(--wlh-border-color, #ff9800);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+html.wlh-saving-watch-later tp-yt-iron-dropdown {
+  visibility: hidden !important;
+}
+
+.wlh-card-watch-later svg {
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.wlh-card-watch-later:hover {
+  background-color: var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.08));
+}
+
+html[dark] .wlh-card-watch-later:hover {
+  background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1));
+}
+
+.wlh-card-watch-later:active {
+  transform: scale(0.94);
+}
+
+.wlh-card-watch-later[aria-busy="true"] {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.wlh-card-watch-later:focus-visible {
+  outline: 2px solid var(--yt-spec-text-primary, #0f0f0f);
+  outline-offset: 2px;
+}
+
+html[dark] .wlh-card-watch-later:focus-visible {
+  outline-color: var(--yt-spec-text-primary, #f1f1f1);
+}
+
 yt-list-item-view-model.wlh-watch-later-item .ytListItemViewModelLayoutWrapper {
   border-radius: 8px;
   background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 35%, transparent);

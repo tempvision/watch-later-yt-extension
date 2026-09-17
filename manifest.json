@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Watch Later Highlighter & Playlist Shortcuts",
-  "version": "1.2.4",
-  "description": "Highlights 'Watch later' entries in YouTube's sidebar and menus, and adds quick-access shortcuts to your playlists.",
+  "version": "1.2.5",
+  "description": "Highlights Watch later across YouTube and adds quick actions and playlist shortcuts.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

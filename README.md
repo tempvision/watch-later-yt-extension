@@ -2,15 +2,16 @@
 
 > **Chrome Web Store** — [Install the extension](https://chromewebstore.google.com/detail/cmlmlkmlhhlhjkbdddjneejpamnacdhm?utm_source=item-share-cb)
 
-A lightweight Chrome/Edge extension that highlights **Watch later** across YouTube — in the left sidebar and in the ⋮ menu on every video — and adds quick-access shortcuts to your most recently updated playlists.
+A lightweight Chrome/Edge extension that highlights **Watch later** across YouTube — in the left sidebar and in video menus — and adds quick-access shortcuts to your most recently updated playlists.
 
 ## Features
 
 - Highlights the "Watch later" sidebar entry with a customizable border color.
-- Highlights the "Save to Watch later" option in every video's ⋮ menu with a subtle tint of the same color.
+- Highlights the "Save to Watch later" option in video menus where YouTube provides it.
+- Adds a one-click Watch later button beside supported videos' three-dot menus. Shorts and the Watch Later playlist are excluded.
 - Adds shortcuts to your most recently updated playlists, right under the "Playlists" sidebar entry (up to 20).
 - Changes apply instantly on an already-open YouTube tab — no reload needed.
-- Works in light and dark themes, and in any YouTube locale (it matches language-neutral URLs, not translated labels).
+- Works in light and dark themes. Sidebar highlighting uses language-neutral URLs.
 
 ## Installation (developer mode)
 
@@ -26,7 +27,8 @@ Click the extension icon to open the settings popup:
 
 - **Watch later border color** — pick any color; it applies instantly on YouTube.
 - **Playlist shortcuts to show** — set `0` to hide the shortcuts, up to `20`.
-- **Reset to defaults** — restores the default orange highlight and 5 shortcuts.
+- **Video action** — show or hide the one-click Watch later button beside video menus.
+- **Reset to defaults** — restores the default orange highlight, 5 shortcuts, and video action.
 
 ## Configuration
 
@@ -34,6 +36,7 @@ Click the extension icon to open the settings popup:
 | --- | --- | --- |
 | `borderColor` | `#ff9800` | any hex color |
 | `maxPlaylists` | `5` | 0–20 |
+| `showCardButton` | `true` | on/off |
 
 Settings are stored with `chrome.storage.sync`, so they sync across your Chrome profile.
 
@@ -41,15 +44,21 @@ Settings are stored with `chrome.storage.sync`, so they sync across your Chrome 
 
 Only `storage`. The extension reads your playlists from the public `/feed/playlists` page on the same origin (youtube.com → youtube.com) — no extra host permissions and no private API endpoints.
 
+## Maintenance note
+
+YouTube does not provide a public API for modifying its interface, so the extension relies on YouTube's internal HTML structure. If YouTube renames or reorganizes its video-card, sidebar, or menu elements, the selectors in `content.css`, `playlist-shortcuts.js`, and `menu-highlight.js` may need updating.
+
+Menu actions are currently identified by the English labels "Save to Watch later" and "Remove from Watch later." These features may not work when YouTube is displayed in another language. The sidebar highlight is more resilient because it uses the language-neutral `list=WL` URL.
+
 ## Project structure
 
 ```
 manifest.json           MV3 manifest
-constants.js            Shared defaults (borderColor, maxPlaylists)
+constants.js            Shared settings defaults
 settings.js             Content script: loads/applies settings
 playlist-shortcuts.js   Content script: fetches & renders playlist shortcuts
-content.css             Sidebar + menu highlight styles
-menu-highlight.js       Content script: highlights the Watch later menu option
+content.css             Sidebar, menu and video action styles
+menu-highlight.js       Content script: menu highlighting + video actions
 popup.html / .css / .js Settings popup
 icons/                  Extension icons
 ```

@@ -7,7 +7,6 @@
   --wlh-white: #ffffff;
   --wlh-dim: #8f8f96;
   --wlh-accent: #ff9800;
-  --wlh-red: #ff4d4f;
   --wlh-mono: "JetBrains Mono", "Roboto Mono", "Consolas", "SFMono-Regular", monospace;
   --wlh-sans: "Inter", "Segoe UI", "Roboto", Arial, sans-serif;
 }
@@ -34,7 +33,6 @@ body {
 .wlh-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding-bottom: 12px;
   margin-bottom: 14px;
   border-bottom: 2px solid var(--wlh-text);
@@ -151,6 +149,14 @@ input[type="number"]#maxPlaylists {
 
 input[type="number"]#maxPlaylists:focus-visible {
   border-color: var(--wlh-accent);
+}
+
+input[type="checkbox"]#showCardButton {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--wlh-accent);
+  cursor: pointer;
 }
 
 /* Focus */

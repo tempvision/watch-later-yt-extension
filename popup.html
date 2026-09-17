@@ -20,7 +20,7 @@
         <p>Change the highlight color for Watch later in your sidebar.</p>
       </div>
       <div class="wlh-control">
-        <input type="color" id="borderColor" />
+        <input type="color" id="borderColor" aria-label="Watch later accent color" />
         <span id="borderColorValue" class="wlh-hex">#ff9800</span>
       </div>
     </section>
@@ -31,7 +31,24 @@
         <p>Set how many playlists are visible in your sidebar.</p>
       </div>
       <div class="wlh-control">
-        <input type="number" id="maxPlaylists" min="0" max="20" step="1" />
+        <input
+          type="number"
+          id="maxPlaylists"
+          min="0"
+          max="20"
+          step="1"
+          aria-label="Visible playlist shortcuts"
+        />
+      </div>
+    </section>
+
+    <section class="wlh-card">
+      <div class="wlh-card-text">
+        <h2>Video action</h2>
+        <p>Show a quick Watch later button beside each video's menu.</p>
+      </div>
+      <div class="wlh-control">
+        <input type="checkbox" id="showCardButton" aria-label="Show Watch later button beside video menus" />
       </div>
     </section>
   </main>

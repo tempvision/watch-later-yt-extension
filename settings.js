@@ -23,13 +23,21 @@
     let changed = false;
 
     if (changes.borderColor) {
-      window.WLH_SETTINGS.borderColor = changes.borderColor.newValue;
+      window.WLH_SETTINGS.borderColor =
+        changes.borderColor.newValue ?? WLH_DEFAULTS.borderColor;
       applyBorderColor(window.WLH_SETTINGS.borderColor);
       changed = true;
     }
 
     if (changes.maxPlaylists) {
-      window.WLH_SETTINGS.maxPlaylists = changes.maxPlaylists.newValue;
+      window.WLH_SETTINGS.maxPlaylists =
+        changes.maxPlaylists.newValue ?? WLH_DEFAULTS.maxPlaylists;
+      changed = true;
+    }
+
+    if (changes.showCardButton) {
+      window.WLH_SETTINGS.showCardButton =
+        changes.showCardButton.newValue ?? WLH_DEFAULTS.showCardButton;
       changed = true;
     }
 

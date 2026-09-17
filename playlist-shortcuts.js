@@ -15,12 +15,15 @@
         const response = await fetch(PLAYLISTS_FEED_URL, {
           credentials: "include",
         });
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
         const text = await response.text();
 
         const match = text.match(/var ytInitialData = ({[\s\S]*?});/);
         if (!match) {
           console.warn("[Watch Later Highlighter] ytInitialData not found.");
-          return [];
+          return cachedPlaylists || [];
         }
 
         const data = JSON.parse(match[1]);
@@ -46,7 +49,7 @@
         return playlists;
       } catch (e) {
         console.error("[Watch Later Highlighter] Failed fetching playlists:", e);
-        return [];
+        return cachedPlaylists || [];
       } finally {
         inFlight = null;
       }
@@ -118,9 +121,9 @@
     entry.insertAdjacentElement("afterend", container);
   }
 
-  async function refreshAndRender({ force = false } = {}) {
+  async function refreshAndRender() {
     const stale = Date.now() - lastFetchTime > REFRESH_INTERVAL_MS;
-    if (cachedPlaylists && !force && !stale) {
+    if (cachedPlaylists && !stale) {
       renderShortcuts(cachedPlaylists);
       return;
     }

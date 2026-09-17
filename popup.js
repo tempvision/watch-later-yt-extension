@@ -1,6 +1,7 @@
 const borderColorInput = document.getElementById("borderColor");
 const borderColorValue = document.getElementById("borderColorValue");
 const maxPlaylistsInput = document.getElementById("maxPlaylists");
+const showCardButtonInput = document.getElementById("showCardButton");
 const resetBtn = document.getElementById("resetBtn");
 const savedNote = document.getElementById("savedNote");
 
@@ -28,6 +29,12 @@ function normalizeColor(value) {
   return WLH_DEFAULTS.borderColor;
 }
 
+function normalizePlaylistCount(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed)) return null;
+  return Math.min(20, Math.max(0, parsed));
+}
+
 function renderColorValue(hex) {
   borderColorValue.textContent = hex;
   document.documentElement.style.setProperty("--wlh-accent", hex);
@@ -38,7 +45,12 @@ function loadSettings() {
     const color = normalizeColor(items.borderColor);
     borderColorInput.value = color;
     renderColorValue(color);
-    maxPlaylistsInput.value = items.maxPlaylists;
+    maxPlaylistsInput.value =
+      normalizePlaylistCount(items.maxPlaylists) ?? WLH_DEFAULTS.maxPlaylists;
+    showCardButtonInput.checked =
+      typeof items.showCardButton === "boolean"
+        ? items.showCardButton
+        : WLH_DEFAULTS.showCardButton;
   });
 }
 
@@ -63,28 +75,37 @@ borderColorInput.addEventListener("change", (e) => {
 let maxPlaylistsTimer = null;
 
 maxPlaylistsInput.addEventListener("input", (e) => {
+  clearTimeout(maxPlaylistsTimer);
   const raw = e.target.value;
   if (raw === "") return;
 
-  let value = parseInt(raw, 10);
-  if (Number.isNaN(value)) return;
-  value = Math.min(20, Math.max(0, value));
+  const value = normalizePlaylistCount(raw);
+  if (value === null) return;
 
-  clearTimeout(maxPlaylistsTimer);
   maxPlaylistsTimer = setTimeout(() => {
     saveSettings({ maxPlaylists: value }, flashSaved);
   }, 200);
 });
 
 maxPlaylistsInput.addEventListener("blur", (e) => {
-  if (e.target.value === "" || Number.isNaN(parseInt(e.target.value, 10))) {
+  const value = normalizePlaylistCount(e.target.value);
+  if (value === null) {
     chrome.storage.sync.get(WLH_DEFAULTS, (items) => {
-      e.target.value = items.maxPlaylists;
+      e.target.value =
+        normalizePlaylistCount(items.maxPlaylists) ?? WLH_DEFAULTS.maxPlaylists;
     });
+    return;
   }
+  e.target.value = value;
+});
+
+showCardButtonInput.addEventListener("change", (e) => {
+  saveSettings({ showCardButton: e.target.checked }, flashSaved);
 });
 
 resetBtn.addEventListener("click", () => {
+  clearTimeout(borderColorTimer);
+  clearTimeout(maxPlaylistsTimer);
   saveSettings(WLH_DEFAULTS, () => {
     loadSettings();
     flashSaved();
