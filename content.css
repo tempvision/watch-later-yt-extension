@@ -78,7 +78,8 @@ html[dark] .wlh-shortcut-icon {
   box-sizing: border-box;
 }
 
-.wlh-card-watch-later {
+.wlh-card-watch-later,
+.wlh-card-remove-watch-later {
   display: grid;
   place-items: center;
   width: 40px;
@@ -93,39 +94,46 @@ html[dark] .wlh-shortcut-icon {
   cursor: pointer;
 }
 
-html.wlh-saving-watch-later tp-yt-iron-dropdown {
+html.wlh-running-watch-later-action tp-yt-iron-dropdown {
   visibility: hidden !important;
 }
 
-.wlh-card-watch-later svg {
+.wlh-card-watch-later svg,
+.wlh-card-remove-watch-later svg {
   width: 24px;
   height: 24px;
   pointer-events: none;
 }
 
-.wlh-card-watch-later:hover {
+.wlh-card-watch-later:hover,
+.wlh-card-remove-watch-later:hover {
   background-color: var(--yt-spec-10-percent-layer, rgba(0, 0, 0, 0.08));
 }
 
-html[dark] .wlh-card-watch-later:hover {
+html[dark] .wlh-card-watch-later:hover,
+html[dark] .wlh-card-remove-watch-later:hover {
   background-color: var(--yt-spec-10-percent-layer, rgba(255, 255, 255, 0.1));
 }
 
-.wlh-card-watch-later:active {
+.wlh-card-watch-later:active,
+.wlh-card-remove-watch-later:active {
   transform: scale(0.94);
 }
 
-.wlh-card-watch-later[aria-busy="true"] {
+.wlh-card-watch-later[aria-busy="true"],
+.wlh-card-remove-watch-later[aria-busy="true"] {
   opacity: 0.72;
   cursor: wait;
 }
 
-.wlh-card-watch-later:focus-visible {
+.wlh-card-watch-later:focus-visible,
+.wlh-card-remove-watch-later:focus-visible {
   outline: 2px solid var(--yt-spec-text-primary, #0f0f0f);
   outline-offset: 2px;
 }
 
-html[dark] .wlh-card-watch-later:focus-visible {
+html[dark] .wlh-card-watch-later:focus-visible,
+html[dark] .wlh-card-remove-watch-later:focus-visible {
   outline-color: var(--yt-spec-text-primary, #f1f1f1);
 }
 
@@ -135,5 +143,14 @@ yt-list-item-view-model.wlh-watch-later-item .ytListItemViewModelLayoutWrapper {
 }
 
 yt-list-item-view-model.wlh-watch-later-item .ytListItemViewModelLeading {
+  color: var(--wlh-border-color, #ff9800);
+}
+
+ytd-menu-service-item-renderer.wlh-watch-later-item tp-yt-paper-item {
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--wlh-border-color, #ff9800) 35%, transparent);
+}
+
+ytd-menu-service-item-renderer.wlh-watch-later-item yt-icon {
   color: var(--wlh-border-color, #ff9800);
 }

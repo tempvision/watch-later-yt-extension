@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Watch Later Highlighter & Playlist Shortcuts",
-  "version": "1.2.5",
+  "version": "1.3",
   "description": "Highlights Watch later across YouTube and adds quick actions and playlist shortcuts.",
   "icons": {
     "16": "icons/icon16.png",

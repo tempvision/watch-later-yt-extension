@@ -7,8 +7,8 @@ A lightweight Chrome/Edge extension that highlights **Watch later** across YouTu
 ## Features
 
 - Highlights the "Watch later" sidebar entry with a customizable border color.
-- Highlights the "Save to Watch later" option in video menus where YouTube provides it.
-- Adds a one-click Watch later button beside supported videos' three-dot menus. Shorts and the Watch Later playlist are excluded.
+- Highlights the "Save to Watch later" and "Remove from Watch later" menu options where YouTube provides them.
+- Adds one-click Watch later actions beside supported videos' three-dot menus: save on normal pages and remove on the Watch Later playlist. Shorts and Playables are excluded.
 - Adds shortcuts to your most recently updated playlists, right under the "Playlists" sidebar entry (up to 20).
 - Changes apply instantly on an already-open YouTube tab — no reload needed.
 - Works in light and dark themes. Sidebar highlighting uses language-neutral URLs.
@@ -27,7 +27,7 @@ Click the extension icon to open the settings popup:
 
 - **Watch later border color** — pick any color; it applies instantly on YouTube.
 - **Playlist shortcuts to show** — set `0` to hide the shortcuts, up to `20`.
-- **Video action** — show or hide the one-click Watch later button beside video menus.
+- **Video action** — show or hide one-click save/remove actions beside video menus.
 - **Reset to defaults** — restores the default orange highlight, 5 shortcuts, and video action.
 
 ## Configuration
