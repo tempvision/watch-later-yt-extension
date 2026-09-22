@@ -25,20 +25,24 @@
       </div>
     </section>
 
-    <section class="wlh-card">
-      <div class="wlh-card-text">
-        <h2>Visible playlists</h2>
-        <p>Set how many playlists are visible in your sidebar.</p>
+    <section class="wlh-card wlh-card--stack">
+      <div class="wlh-playlist-heading">
+        <div class="wlh-card-text">
+          <h2>Playlist shortcuts</h2>
+          <p>Choose which playlists appear in your sidebar.</p>
+        </div>
+        <button id="refreshPlaylistsBtn" type="button" title="Refresh playlists" aria-label="Refresh playlists">↻</button>
       </div>
-      <div class="wlh-control">
-        <input
-          type="number"
-          id="maxPlaylists"
-          min="0"
-          max="20"
-          step="1"
-          aria-label="Visible playlist shortcuts"
-        />
+      <div class="wlh-playlist-picker">
+        <!-- <input type="search" id="playlistSearch" placeholder="Search playlists" aria-label="Search playlists" /> -->
+        <div class="wlh-playlist-actions">
+          <span id="playlistSelectionCount" class="wlh-playlist-count">0 selected</span>
+          <button id="selectAllPlaylistsBtn" type="button">Select all</button>
+          <button id="clearPlaylistsBtn" type="button">Clear</button>
+        </div>
+        <div id="playlistList" class="wlh-playlist-list" aria-live="polite">
+          <span class="wlh-playlist-status">Open YouTube to load playlists.</span>
+        </div>
       </div>
     </section>
 

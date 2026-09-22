@@ -7,6 +7,44 @@
   let lastFetchTime = 0;
   let inFlight = null;
 
+  function getSelectedPlaylistIds() {
+    if (Array.isArray(window.WLH_SETTINGS?.selectedPlaylistIds)) {
+      return window.WLH_SETTINGS.selectedPlaylistIds;
+    }
+    return null;
+  }
+
+  async function cachePlaylistCatalog(playlists) {
+    await chrome.storage.local.set({
+      playlistCatalog: {
+        items: playlists,
+        fetchedAt: Date.now(),
+      },
+    });
+  }
+
+  async function migrateLegacySelection(playlists) {
+    const settings = await chrome.storage.sync.get({
+      selectedPlaylistIds: null,
+      maxPlaylists: WLH_DEFAULTS.maxPlaylists,
+    });
+
+    if (Array.isArray(settings.selectedPlaylistIds)) return settings.selectedPlaylistIds;
+
+    const maxPlaylists = Math.min(
+      20,
+      Math.max(0, Number.parseInt(settings.maxPlaylists, 10) || 0)
+    );
+    const selectedPlaylistIds = playlists
+      .slice(0, maxPlaylists)
+      .map((playlist) => playlist.id);
+
+    await chrome.storage.sync.set({ selectedPlaylistIds });
+    await chrome.storage.sync.remove("maxPlaylists");
+    window.WLH_SETTINGS.selectedPlaylistIds = selectedPlaylistIds;
+    return selectedPlaylistIds;
+  }
+
   function fetchPlaylistsFromFeed() {
     if (inFlight) return inFlight;
 
@@ -46,6 +84,8 @@
 
         cachedPlaylists = playlists;
         lastFetchTime = Date.now();
+        await cachePlaylistCatalog(playlists);
+        await migrateLegacySelection(playlists);
         return playlists;
       } catch (e) {
         console.error("[Watch Later Highlighter] Failed fetching playlists:", e);
@@ -105,13 +145,14 @@
     const existing = document.getElementById(CONTAINER_ID);
     if (existing) existing.remove();
 
-    const maxPlaylists =
-      (window.WLH_SETTINGS && window.WLH_SETTINGS.maxPlaylists) ??
-      WLH_DEFAULTS.maxPlaylists;
+    if (!playlists || playlists.length === 0) return;
 
-    if (!playlists || playlists.length === 0 || maxPlaylists <= 0) return;
+    const selectedPlaylistIds = getSelectedPlaylistIds();
+    const shortcuts = selectedPlaylistIds
+      ? playlists.filter((playlist) => selectedPlaylistIds.includes(playlist.id))
+      : playlists.slice(0, WLH_DEFAULTS.maxPlaylists);
 
-    const shortcuts = playlists.slice(0, maxPlaylists);
+    if (shortcuts.length === 0) return;
 
     const container = document.createElement("div");
     container.id = CONTAINER_ID;
@@ -121,9 +162,9 @@
     entry.insertAdjacentElement("afterend", container);
   }
 
-  async function refreshAndRender() {
+  async function refreshAndRender({ force = false } = {}) {
     const stale = Date.now() - lastFetchTime > REFRESH_INTERVAL_MS;
-    if (cachedPlaylists && !stale) {
+    if (cachedPlaylists && !force && !stale) {
       renderShortcuts(cachedPlaylists);
       return;
     }
@@ -137,6 +178,13 @@
 
   document.addEventListener("wlh-settings-changed", () => {
     renderShortcuts(cachedPlaylists);
+  });
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message?.type !== "wlh-refresh-playlists") return;
+
+    refreshAndRender({ force: true }).then(() => sendResponse({ ok: true }));
+    return true;
   });
 
   let debounceTimer = null;

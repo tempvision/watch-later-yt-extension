@@ -26,7 +26,7 @@ A lightweight Chrome/Edge extension that highlights **Watch later** across YouTu
 Click the extension icon to open the settings popup:
 
 - **Watch later border color** — pick any color; it applies instantly on YouTube.
-- **Playlist shortcuts to show** — set `0` to hide the shortcuts, up to `20`.
+- **Playlist shortcuts** — search and choose the playlists shown in your sidebar.
 - **Video action** — show or hide one-click save/remove actions beside video menus.
 - **Reset to defaults** — restores the default orange highlight, 5 shortcuts, and video action.
 
@@ -35,10 +35,12 @@ Click the extension icon to open the settings popup:
 | Setting | Default | Range |
 | --- | --- | --- |
 | `borderColor` | `#ff9800` | any hex color |
-| `maxPlaylists` | `5` | 0–20 |
+| `selectedPlaylistIds` | first 5 playlists after migration | selected playlist IDs |
 | `showCardButton` | `true` | on/off |
 
 Settings are stored with `chrome.storage.sync`, so they sync across your Chrome profile.
+
+Existing installations migrate their old playlist count automatically by selecting the same first playlists they previously displayed. The picker uses the playlists available in YouTube's initial `/feed/playlists` response; very large libraries may not expose every playlist until YouTube loads more results.
 
 ## Permissions
 

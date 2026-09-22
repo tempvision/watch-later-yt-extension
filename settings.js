@@ -35,6 +35,12 @@
       changed = true;
     }
 
+    if (changes.selectedPlaylistIds) {
+      window.WLH_SETTINGS.selectedPlaylistIds =
+        changes.selectedPlaylistIds.newValue ?? [];
+      changed = true;
+    }
+
     if (changes.showCardButton) {
       window.WLH_SETTINGS.showCardButton =
         changes.showCardButton.newValue ?? WLH_DEFAULTS.showCardButton;
