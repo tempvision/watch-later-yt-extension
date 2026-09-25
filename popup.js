@@ -9,6 +9,20 @@ const showCardButtonInput = document.getElementById("showCardButton");
 const resetBtn = document.getElementById("resetBtn");
 const savedNote = document.getElementById("savedNote");
 
+// Set to false before publishing; mock data is for marketing screenshots only.
+const USE_MOCK_PLAYLISTS = true;
+const MOCK_PLAYLISTS = [
+  { id: "mock-music", title: "Music" },
+  { id: "mock-valentine", title: "Valentine Ideas" },
+  // { id: "mock-recipes", title: "Weeknight Recipes" },
+  { id: "mock-workout", title: "Workout Motivation" },
+  { id: "mock-travel", title: "Travel Inspiration" },
+  { id: "mock-diy", title: "DIY & Home Projects" },
+  // { id: "mock-coding", title: "Coding Tutorials" },
+  { id: "mock-podcasts", title: "Podcasts" },
+];
+const MOCK_SELECTED_IDS = ["mock-music", "mock-valentine", "mock-workout", "mock-travel"];
+
 let savedNoteTimer = null;
 let playlistCatalog = [];
 let selectedPlaylistIds = [];
@@ -55,6 +69,10 @@ function loadSettings() {
         : WLH_DEFAULTS.showCardButton;
     const catalog = await chrome.storage.local.get("playlistCatalog");
     playlistCatalog = catalog.playlistCatalog?.items || [];
+    if (USE_MOCK_PLAYLISTS) {
+      playlistCatalog = MOCK_PLAYLISTS;
+      selectedPlaylistIds = [...MOCK_SELECTED_IDS];
+    }
     renderPlaylistList();
   });
 }
@@ -114,6 +132,7 @@ function renderPlaylistList() {
 function scheduleSelectedPlaylistSave() {
   updatePlaylistCount();
   clearTimeout(selectedPlaylistTimer);
+  if (USE_MOCK_PLAYLISTS) return;
   selectedPlaylistTimer = setTimeout(() => {
     saveSettings({ selectedPlaylistIds }, flashSaved);
   }, 200);
@@ -132,6 +151,7 @@ function clearAllPlaylists() {
 }
 
 async function refreshPlaylists() {
+  if (USE_MOCK_PLAYLISTS) return;
   setPlaylistStatus("Refreshing playlists...");
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!activeTab?.id) {
@@ -177,6 +197,7 @@ selectAllPlaylistsBtn.addEventListener("click", selectAllPlaylists);
 clearPlaylistsBtn.addEventListener("click", clearAllPlaylists);
 
 chrome.storage.onChanged.addListener((changes, area) => {
+  if (USE_MOCK_PLAYLISTS) return;
   if (area === "local" && changes.playlistCatalog) {
     playlistCatalog = changes.playlistCatalog.newValue?.items || [];
     renderPlaylistList();
